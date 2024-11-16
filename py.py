@@ -6,20 +6,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 
-# Set page config
-st.set_page_config(page_title="Customer Analysis Dashboard", layout="wide")
 
-# Function to create a bar plot for complaint frequency by 'Received Via'
+st.set_page_config(page_title="Customer Analysis Dashboard", layout="wide")
 def create_complaints_bar_plot(df):
     plt.figure(figsize=(10, 6))
     
-    # Create binary column for complaints
     df['Complaint_Binary'] = df['Customer Complaint'].apply(lambda x: 1 if pd.notna(x) else 0)
-    
-    # Calculate statistics
     complaint_stats = df.groupby('Received Via')['Complaint_Binary'].agg(['mean', 'median']).reset_index()
-    
-    # Create bar plot
     x = np.arange(len(complaint_stats))
     width = 0.35
     
@@ -147,8 +140,6 @@ def perform_linear_regression(df):
 
 def main():
     st.title("Customer Analysis Dashboard")
-    
-    # File uploader
     uploaded_file = st.file_uploader("Upload your CSV file", type=['csv'])
     
     if uploaded_file is not None:
@@ -156,12 +147,8 @@ def main():
             df = pd.read_csv(uploaded_file)
             
             st.success("Data loaded successfully!")
-            
-            # Show sample of the dataset
             st.write("### Sample Data")
             st.dataframe(df.head())
-            
-            # Create tabs for different analyses
             tab1, tab2, tab3, tab4 = st.tabs(["Complaint Analysis", "Mode Distribution", 
                                              "Category Dominance", "Regression Analysis"])
             
