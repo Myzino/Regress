@@ -57,7 +57,7 @@ def create_dominance_bar_plots(df):
     n_rows = (n_cols + 2) // 3
     
     fig, axes = plt.subplots(n_rows, 3, figsize=(20, 5*n_rows))
-    fig.suptitle('Dominant Categories Analysis for All Columns', fontsize=16, y=1.02)
+    fig.suptitle('Dominant Categories Analysis for All Column's, fontsize=16, y=1.02)
     
     axes_flat = axes.flatten()
     
