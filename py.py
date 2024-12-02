@@ -6,7 +6,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix, classification_report
 
-
 st.set_page_config(page_title="Customer Analysis Dashboard", layout="wide")
 
 def create_complaints_bar_plot(df):
@@ -90,30 +89,31 @@ def create_dominance_bar_plots(df):
     return fig
 
 def perform_logistic_regression(df):
+    # Map "Closed" to 1, and others ("Open", "Pending", "Solvedd") to 0
     if 'Status' in df.columns:
         df['Status'] = df['Status'].apply(lambda x: 1 if x == 'Closed' else 0)
 
+    # Check if there are enough numerical columns for regression
     numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
-
     if len(numerical_columns) < 2:
         st.warning("The dataset must have at least two numerical columns for regression.")
         return
 
+    # Define features and target
     target_column = 'Status'
     feature_columns = [col for col in numerical_columns if col != target_column]
-
     X = df[feature_columns]
     y = df[target_column]
 
+    # Split the dataset into training and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Train a Logistic Regression model
+    # Train logistic regression
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
 
+    # Predict and evaluate
     y_pred = model.predict(X_test)
-
-    # Evaluate the model
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
@@ -124,7 +124,7 @@ def perform_logistic_regression(df):
     st.metric("Precision", f"{precision:.4f}")
     st.metric("Recall", f"{recall:.4f}")
 
-    # Display the confusion matrix
+    # Confusion matrix visualization
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.matshow(cm, cmap='Blues', alpha=0.6)
     for i in range(cm.shape[0]):
